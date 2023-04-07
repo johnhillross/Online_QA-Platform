@@ -100,3 +100,7 @@ An online question and answer site based on SpringBoot
 ## 3.13 问题编辑界面
 
 ![问题编辑界面](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/questionedit.png)
+
+# 详细内容请参考
+
+https://github.com/johnhillross/Online_QA-Platform/blob/main/README.pdf
