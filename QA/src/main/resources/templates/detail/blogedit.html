@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:replace="~{fragments/header :: header}">
+</head>
+<body>
+	<div class="QA-container">
+		<h2>Create a new blog</h2>
+		<hr>
+		<form enctype="multipart/form-data" th:action="'/user/'+${blogModel.user.username}+'/blogs/edit'" th:object="${blogModel.blog}" method="POST">
+			<div class="row">
+				<div style="border-right: 1px solid #e5e5e5;" class="col-md-9">
+					<input type="hidden" name="id" th:value="*{id}" id="blogId">
+						
+					<div class="row">
+						<div class="col-md-2">
+							<div class="form-group">
+								<label for="Owner" class="col-form-label"><strong>Owner </strong></label>
+								<div class="QA-blogs-authors">
+									<div th:if="${blogModel.user.avatar != null}" th:style="'width: 30px; height: 30px; margin-right: 15px;' + 'background-image: url(' + 'http://localhost:81/upload/avatar/' + ${blogModel.user.avatar} + ');'" class="QA-img"></div>
+		          					<div th:unless="${blogModel.user.avatar != null}" th:style="'width: 30px; height: 30px; margin-right: 15px;' + 'background-image: url(' + @{/images/default-avatar.jpg} + ');'" class="QA-img"></div>
+									<a style="color: black;" th:href="'/user/'+${blogModel.user.username}"><strong th:text="${blogModel.user.username}"></strong></a>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-10">
+							<div class="form-group">
+								<label for="title" class="col-form-label"><strong>Blog
+										Title </strong><span style="color: red">*</span></label> <input type="text"
+									class="form-control" id="title" name="title" th:value="*{title}"
+									maxlength="50" placeholder="Please fill in the blog title">
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="summary" class="col-form-label"><strong>Blog
+								Summary </strong><span style="color: red">*</span></label>
+						<textarea type="text" style="resize: none;" class="form-control"
+							id="summary" name="summary" th:text="*{summary}" maxlength="300"
+							placeholder="Please fill in the blog summary"></textarea>
+					</div>
+
+					<div class="form-group">
+						<label class="col-form-label"><strong>Blog Cover
+						</strong><span style="color: red">*</span></label> <label for="setcover"> <img
+							style="width: 100%; height: auto; border-radius: 3px;"
+							id="img-cover"
+							th:src="*{cover} == null ? @{/images/default-cover.jpg} : 'http://localhost:81/upload/cover/'+*{cover}">
+						</label> <input type="file" accept="image/*" id="setcover" name="setcover"
+							th:value="*{cover}" hidden />
+					</div>
+
+					<div class="form-group">
+						<label for="content" class="col-form-label"><strong>Blog
+								Content </strong><span style="color: red">*</span></label>
+						<div id="editor">
+							<textarea style="display:none;" id="md"
+							name="content" th:text="*{content}"></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label for="tags" class="col-form-label"><strong>Tags </strong><span style="color: red">*</span></label>
+						<input type="text" class="form-control form-control-tag" id="tags" name="tags" th:value="${blogModel.blog.tags}">
+					</div>
+					
+					<div class="form-group">
+						<label for="catalog" class="col-form-label"><strong>Catalog </strong><span style="color: red">*</span></label>
+						<select id="catalog" name="catalog" class="form-control form-control-chosen" data-placeholder="Please select" >
+							<option th:value="*{id}" th:text="*{name}" th:each="catalog : ${blogModel.catalogs}" th:object="${catalog}" th:selected="${catalog eq blogModel.blog.catalog }"></option>
+						</select>
+					</div>
+					<hr>
+					<button class="btn btn-primary btn-lg btn-block" type="submit">Create blog</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

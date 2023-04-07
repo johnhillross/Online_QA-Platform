@@ -1,0 +1,89 @@
+<div class="card-header bg-light font-dark">
+
+	<div style="display: flex;">
+		<div style="margin-right: 10px;">
+			<input type="text" class="form-control" id="searchName" placeholder="Search by username">
+		</div>
+		<div style="margin-right: 10px;" class="input-group-btn">
+			<button style="margin-right: 10px; color: #212529;" class="btn btn-outline-secondary my-2 my-sm-0 rounded border border-dark" type="button" id="searchNameBtn">
+				<i class="fa fa-search" aria-hidden="true"></i>
+			</button>
+		</div>
+		<div style="margin-left: auto;" class="btn btn-primary" data-toggle="modal" data-target="#flipFlop" role="button" id="addUser">
+			<i class="fa fa-plus" aria-hidden="true"></i>
+		</div>
+	</div>
+</div>
+
+<div id="mainContainer" class="container">
+	<div id="mainContainerRepleace" class="row">
+		<table style="border-bottom: 1px solid #e5e5e5;" class="table table-hover">
+			<thead>
+				<tr>
+					<th data-field="id">ID</th>
+					<th data-field="username">Username</th>
+					<th data-field="email">Email</th>
+					<th data-field="authorities">Role</th>
+					<th data-field="operation">Operation</th>
+
+				</tr>
+			</thead>
+			<tbody>
+
+				<tr th:each="user : ${userModel.userList}">
+					<td th:text="${user.id}"></td>
+					<td><a style="color: #212529;" th:href="'/user/'+${user.username}"
+						th:text="${user.username}"></a></td>
+					<td th:text="${user.email}"></td>
+					<td th:text="${user.authorities}"></td>
+					<td>
+						<div style="display: flex;">
+							<a style="margin-right: auto;" class="blog-edit-user" data-toggle="modal"
+								data-target="#flipFlop" role="button"
+								data-th-attr="userId=${user.id}"> <i
+								class="fa fa-pencil-square-o" aria-hidden="true"></i>
+							</a>
+							<a th:if="${#authentication.name != user.username}" style="margin-right: auto;" class="blog-delete-user" role="button"
+								data-th-attr="userId=${user.id}"> <i class="fa fa-times"
+								aria-hidden="true"></i>
+							</a>
+						</div>
+					</td>
+				</tr>
+
+			</tbody>
+
+		</table>
+		<div class="col-md-9">
+		</div>
+		<div class="col-md-3">
+			<div style="margin: auto;" th:replace="~{fragments/page :: page}"></div>
+		</div>
+	</div>
+</div>
+
+<!-- The modal -->
+<div class="modal fade" id="flipFlop" tabindex="-1" role="dialog"
+	aria-labelledby="modalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="modalLabel">Add/Edit</h4>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+
+			</div>
+			<div class="modal-body" id="userFormContainer"></div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" data-dismiss="modal" id="submitEdit">Submit</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- JavaScript -->
+<script src="../../js/users/main.js" th:src="@{/js/users/main.js}"></script>
+

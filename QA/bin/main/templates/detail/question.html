@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:replace="~{fragments/header :: header}">
+</head>
+<body>
+	<div class="QA-container">
+		<div style="margin-bottom: 10px; border-bottom: 1px solid #e5e5e5;">
+			<a th:href="'/user/' + ${questionModel.user.username} + '/questions/'+ ${questionModel.id}"><h3 style="color: #212529;" th:text="${questionModel.title}"></h3></a>
+			<div style="padding-top: 10px; padding-bottom: 10px; display: flex;">
+				<div style="margin-right: 20px;">
+					<span class="text-muted">Asked on</span>
+					<span th:text="${#strings.substring(questionModel.createTime,0,10)}"></span>
+				</div>
+				<div style="margin-right: 20px;">
+					<span class="text-muted">Viewed</span>
+					<span th:text="${questionModel.viewSize}"></span>
+					<span>times</span>
+				</div>
+				<div th:if="${isQuestionOwner}" style="margin-left: auto;">
+		        	<div style="display: flex;">
+		        		<div style="margin-right: 10px; padding: 5px 10px 5px 10px; border: 1px solid #212529; border-radius: 3px;">
+		        			<a style="color: #212529;" th:href="'/user/' + ${questionModel.user.username}+ '/questions/edit/'+ ${questionModel.id}"><span class="fas fa-pencil-square-o"></span>Edit</a>
+		        		</div>
+		        		<div style="margin-right: 10px; padding: 5px 10px 5px 10px; border: 1px solid #212529; border-radius: 3px;" class="question-delete-question">
+		        			<a style="color: #212529;" href="javascript:void(0)"><span class="fas fa-times"></span>Delete</a>
+		        		</div>
+		        	</div>
+		        </div>
+			</div>
+		</div>
+		<div class="row">
+			<div style="border-right: 1px solid #e5e5e5;" class="col-md-9">
+				<div style="margin-bottom: 20px;" class="row">
+					<div style="text-align: center;" class="col-md-1">
+						<div>
+							<a th:if="${currentQVote} == null" href="javascript:void(0);"><span style="font-size: 50px;" class="fas fa-caret-up text-muted" id="submitQUpVote"></span></a>
+							<a th:if="${currentQVote != null && currentQVote.updown}" href="javascript:void(0);"><span style="font-size: 50px; color: #FF7800;" class="fas fa-caret-up" th:attr="qvoteId=${currentQVote.id}" id="cancelQUpVote"></span></a>
+							<a th:if="${currentQVote != null && !currentQVote.updown}" href="javascript:void(0);"><span style="font-size: 50px; color: transparent;" class="fas fa-caret-up text-muted" th:attr="qvoteId=${currentQVote.id}" id="cancelQDownVote"></span></a>
+						</div>
+						<div>
+							<span th:if="${currentQVote} == null" style="font-size: 20px;" class="text-muted"><strong th:text="${questionModel.qvoteSize}"></strong></span>
+							<span th:unless="${currentQVote} == null" style="font-size: 20px; color: #FF7800;"><strong th:text="${questionModel.qvoteSize}"></strong></span>
+						</div>
+						<div>
+							<a th:if="${currentQVote} == null" href="javascript:void(0);"><span style="font-size: 50px;" class="fas fa-caret-down text-muted" id="submitQDownVote"></span></a>
+							<a th:if="${currentQVote != null && !currentQVote.updown}" href="javascript:void(0);"><span style="font-size: 50px; color: #FF7800;" class="fas fa-caret-down" th:attr="qvoteId=${currentQVote.id}" id="cancelQDownVote"></span></a>
+							<a th:if="${currentQVote != null && currentQVote.updown}" href="javascript:void(0);"><span style="font-size: 50px; color: transparent;" class="fas fa-caret-down text-muted" th:attr="qvoteId=${currentQVote.id}" id="cancelQUpVote"></span></a>
+						</div>
+					</div>
+					<div class="col-md-11">
+						<p th:text="${questionModel.summary}"></p>
+						<div id="markdown-question-view">
+				        	<textarea style="display:none;" th:text="${questionModel.content}">
+	                		</textarea>
+	                	</div>
+						<div style="display: flex;">
+							<div style="margin-right: 5px; margin-bottom: 5px;" th:each="tag : ${#strings.arraySplit(questionModel.tags , ',')}"><a th:href="'/questions?keyword=' +  ${tag}"><span class="QA-tag-container" th:text="${tag}"></span></a></div>
+						</div>
+						<div class="row">
+							<div class="col-md-8">
+							</div>
+							<div class="col-md-4">
+								<div class="text-muted">
+									<span>asked on</span>
+									<span th:text="${#strings.substring(questionModel.createTime,0,10)}"></span>
+								</div>
+								<div style="display: flex;">
+          							<div th:if="${questionModel.user.avatar == null}" style="width: 50px; height: 50px; border-radius: 3px; margin-right: 15px; background-image: url('../../../images/default-avatar.jpg');" class="QA-img"></div>
+          							<div th:unless="${questionModel.user.avatar == null}" th:style="'width: 50px; height: 50px; border-radius: 3px; margin-right: 15px;' + 'background-image: url('+'http://localhost:81/upload/avatar/'+${questionModel.user.avatar}+');'" class="QA-img"></div>
+          							<div style="margin: auto 0px auto 0px;">
+          								<a th:href="'/user/'+${questionModel.user.username}"><span class="text-muted" th:text="${questionModel.user.username}"></span></a>
+          							</div>
+								</div>
+							</div>
+						</div>
+						<div id="qcommentContainer" style="margin-top: 20px; margin-bottom: 20px; border-top:1px solid #e5e5e5; border-bottom: 1px solid #e5e5e5;">
+							<div id="qcommentContainerRepleace" style="padding: 5px 20px 5px 20px; border-top: 1px solid #e5e5e5; display: flex;" th:each="qcomment : ${qcomments}" th:object="${qcomment}">
+								<div style="margin-right: 10px;">
+									<span style="margin-right: 10px; margin-bottom: 0px;" th:text="*{content}"></span>
+									<a style="margin-right: 10px;" th:href="'/user/'+*{user.username}"><span class="QA-tag-container" th:text="*{user.username}"></span></a>
+									<span class="text-muted" th:text="*{#strings.substring(createTime,0,10)}"></span>
+								</div>
+								<div th:if="${qcommentOwner} eq *{user.username}" style="margin-left: auto;">
+									<a style="margin-left: auto;" class="question-delete-qcomment" th:attr="qcommentId=*{id}"><i class="fas fa-times" aria-hidden="true"></i></a>
+								</div>
+							</div>
+						</div>
+						<div style="margin-top: 10px; margin-bottom: 10px;">
+							<a href="javascript:void(0);"><span class="QA-add-qcomment text-muted">add a comment</span></a>
+						</div>
+						<div id="QA-qcomment" style="margin-top: 10px; margin-bottom: 10px; display: none;">
+							<div class="row">
+								<div class="col-md-8">
+									<textarea style="resize: none; width: 100%; height: 100px; margin-bottom: 10px;" id="qcommentContent" name="qcommentContent" required="required"></textarea>
+								</div>
+								<div class="col-md-4">
+									<button id="submitQComment" class="btn btn-primary">Post your comment</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div style="display: flex; margin-bottom: 20px; border-bottom: 1px solid #e5e5e5;">
+					<h5 style="padding-bottom: 10px;">
+						<span th:text="${questionModel.answerSize}"></span>
+						<span>Answer</span>
+					</h5>
+					<div style="margin-left: auto; display: flex;">
+						<div id="activeOption" style="border: 1px solid #e5e5e5; border-top: 3px solid #FF7800; border-bottom-color: transparent; padding: 5px 20px 5px 20px;">
+							<a href="javascript:void(0);" style="color: #212529;" id="sortByActive"><span style="font-size: 20px;">active</span></a>
+						</div>
+						<div id="votesOption" style="border: 1px solid transparent; padding: 5px 20px 5px 20px;">
+							<a href="javascript:void(0);" style="color: #212529;" id="sortByVotes"><span style="font-size: 20px;">votes</span></a>
+						</div>
+					</div>
+				</div>
+				
+				<div id="answerContainer" style="border-bottom: 1px solid #e5e5e5; padding-bottom: 30px; margin-bottom: 20px;">
+					<div id="answerContainerRepleace" style="border-bottom: 1px solid #e5e5e5; padding-bottom: 20px; margin: 20px 5px 20px 5px;" th:each="answer , answerStat : ${answers}" th:object="${answer}">
+						<div th:if="${answerOracommentOwner} eq *{user.username}" style="display: flex;">
+	      					<a style="margin-left: auto;" class="question-delete-answer" th:attr="answerId=*{id}"><i class="fas fa-times" aria-hidden="true"></i></a>
+	      				</div>
+						<div class="row">
+							<div style="text-align: center;" class="col-md-1">
+								<div>
+									<div th:if="${currentAVotesId.contains(answer.id)}">
+										<a th:if="${currentAVotes.get(currentAVotesId.indexOf(answer.id)).updown}" href="javascript:void(0);"><span style="font-size: 50px; color: #FF7800;" class="fas fa-caret-up" th:attr="avoteId=${currentAVotes.get(currentAVotesId.indexOf(answer.id)).id}, answerId=*{id}" id="cancelAUpVote"></span></a>
+										<a th:unless="${currentAVotes.get(currentAVotesId.indexOf(answer.id)).updown}" href="javascript:void(0);"><span style="font-size: 50px; color: transparent;" class="fas fa-caret-up text-muted" th:attr="avoteId=${currentAVotes.get(currentAVotesId.indexOf(answer.id)).id}, answerId=*{id}" id="cancelADownVote"></span></a>
+									</div>
+									<div th:unless="${currentAVotesId.contains(answer.id)}">
+										<a href="javascript:void(0);"><span style="font-size: 50px;" class="fas fa-caret-up text-muted" th:attr="answerId=*{id}" id="submitAUpVote"></span></a>
+									</div>
+								</div>
+								<div>
+									<span th:if="${currentAVotesId.contains(answer.id)}" style="font-size: 20px; color: #FF7800;"><strong th:text="*{avoteSize}"></strong></span>
+									<span th:unless="${currentAVotesId.contains(answer.id)}" style="font-size: 20px;" class="text-muted"><strong th:text="*{avoteSize}"></strong></span>
+								</div>
+								<div>
+									<div th:if="${currentAVotesId.contains(answer.id)}">
+										<a th:if="${currentAVotes.get(currentAVotesId.indexOf(answer.id)).updown}" href="javascript:void(0);"><span style="font-size: 50px; color: transparent;" class="fas fa-caret-down text-muted" th:attr="avoteId=${currentAVotes.get(currentAVotesId.indexOf(answer.id)).id}, answerId=*{id}" id="cancelAUpVote"></span></a>
+										<a th:unless="${currentAVotes.get(currentAVotesId.indexOf(answer.id)).updown}" href="javascript:void(0);"><span style="font-size: 50px; color: #FF7800;" class="fas fa-caret-down" th:attr="avoteId=${currentAVotes.get(currentAVotesId.indexOf(answer.id)).id}, answerId=*{id}" id="cancelADownVote"></span></a>
+									</div>
+									<div th:unless="${currentAVotesId.contains(answer.id)}">
+										<a href="javascript:void(0);"><span style="font-size: 50px;" class="fas fa-caret-down text-muted" th:attr="answerId=*{id}" id="submitADownVote"></span></a>
+									</div>
+								</div>
+								<div th:if="${questionOwner} eq ${#authentication.name}">
+									<div th:if="${accAnswerId == 0}">
+										<a id="acceptAnswer" href="javascript:void(0);" th:attr="acceptAnswerId=${answer.id}"><span style="font-size: 30px;" class="fas fa-check text-muted"></span></a>
+									</div>
+									<div th:if="${accAnswerId != 0}">
+										<div th:if="${accAnswerId == answer.id}">
+											<a id="cancelAnswer" href="javascript:void(0);"><span style="font-size: 30px; color: #60b044;" class="fas fa-check"></span></a> 
+										</div>
+									</div>
+								</div>
+								<div th:unless="${questionOwner} eq ${#authentication.name}">
+									<div th:if="${accAnswerId != 0}">
+										<div th:if="${accAnswerId == answer.id}">
+											<a href="javascript:void(0);"><span style="font-size: 30px; color: #60b044;" class="fas fa-check"></span></a> 
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="col-md-11">
+								<div th:id="'markdown-answer-view-'+${answerStat.count}">
+						        	<textarea style="display:none;" th:text="*{content}">
+			                		</textarea>
+			                	</div>
+								<div class="row">
+									<div class="col-md-8">
+									</div>
+									<div class="col-md-4">
+										<div class="text-muted">
+											<span>answered on</span>
+											<span th:text="*{#strings.substring(createTime,0,10)}"></span>
+										</div>
+										<div style="display: flex;">
+		          							<div th:if="*{user.avatar} == null" style="width: 50px; height: 50px; border-radius: 3px; margin-right: 15px; background-image: url('../../../images/default-avatar.jpg');" class="QA-img"></div>
+		          							<div th:unless="*{user.avatar} == null" th:style="'width: 50px; height: 50px; border-radius: 3px; margin-right: 15px;' + 'background-image: url(' + 'http://localhost:81/upload/avatar/' + *{user.avatar} + ');'" class="QA-img"></div>
+		          							<div style="margin: auto 0px auto 0px;">
+		          								<a th:href="'/user/'+*{user.username}"><span class="text-muted" th:text="*{user.username}"></span></a>
+		          							</div>
+										</div>
+									</div>
+								</div>
+								
+								<div style="margin-top: 20px; margin-bottom: 20px; border-top:1px solid #e5e5e5; border-bottom: 1px solid #e5e5e5;">
+									<div th:each="acomment : ${acomments}" th:object="${acomment}">
+										<div th:if="${acomment.answer.id == answer.id}" style="padding: 5px 20px 5px 20px; border-top: 1px solid #e5e5e5; display: flex;">
+											<div style="margin-right: 10px;">
+												<span style="margin-right: 10px; margin-bottom: 0px;" th:text="*{content}"></span>
+												<a style="margin-right: 10px;" th:href="'/user/'+*{user.username}"><span class="QA-tag-container" th:text="*{user.username}"></span></a>
+												<span class="text-muted" th:text="*{#strings.substring(createTime,0,10)}"></span>
+											</div>
+											<div th:if="${answerOracommentOwner} eq *{user.username}" style="margin-left: auto;">
+												<a style="margin-left: auto;" class="answer-delete-acomment" th:attr="acommentId=*{id} , answerId=${answer.id}"><i class="fas fa-times" aria-hidden="true"></i></a>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div style="margin-top: 10px; margin-bottom: 10px;">
+									<a href="javascript:void(0);"><span class="QA-add-acomment text-muted" th:attr="answerCount=${answerStat.count}">add a comment</span></a>
+								</div>
+								<div th:id="'QA-acomment-'+${answerStat.count}" style="margin-top: 10px; margin-bottom: 10px; display: none;">
+									<div class="row">
+										<div class="col-md-8">
+											<textarea style="resize: none; width: 100%; height: 100px; margin-bottom: 10px;" th:id="'acommentContent-'+*{id}" name="acommentContent" required="required"></textarea>
+										</div>
+										<div class="col-md-4">
+											<button id="submitAComment" th:attr="answerId=*{id}" class="btn btn-primary">Post your comment</button>
+										</div>
+									</div>
+								</div>
+								
+							</div>
+						</div>
+						
+						<div th:if="${answerStat.last}">
+							<!-- JavaScript -->
+							<script th:inline="javascript">
+								var answerSize = [[${answerStat.size}]];
+							</script>
+							<script src="../../js/answer/main.js" th:src="@{/js/answer/main.js}"></script>
+						</div>
+					</div>
+				</div>
+				
+				<div>
+					<h5 style="padding-bottom: 10px;">Your Answer</h5>
+					<div id="editor">
+						<textarea style="display:none;" id="answerContent" name="answerContent" required="required"></textarea>
+					</div>
+					<button id="submitAnswer" class="btn btn-primary">Post Your Answer</button>
+				</div>
+				
+			</div>
+			<div class="col-md-3">
+				<div style="padding-top: 15px; border-bottom: 1px solid #e5e5e5; display: flex;">
+					<h4>Related</h4>
+				</div>
+				<div style="padding-top: 10px; padding-bottom: 10px; display: flex;" th:each="question : ${questionList}">
+					<div>
+						<div style="text-align: center;" class="QA-tag-container">
+							<strong th:text="${question.viewSize}"></strong>
+						</div>
+					</div>
+					<div style="margin-left: 10px;"><a th:href="'/user/'+${question.username}+'/questions/'+${question.questionId}"><span style="color: #212529;" th:text="${question.title}"></span></a></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="~{fragments/footer :: footer}"></div>
+	
+	<!-- JavaScript -->
+	<script th:inline="javascript">
+	var questionId = [[${questionModel.id}]];
+	var questionUrl = '/user/' + [[${questionModel.user.username}]] + '/questions/'+ [[${questionModel.id}]] ;
+	</script>
+	<script src="../../js/question/main.js" th:src="@{/js/question/main.js}"></script>
+</body>
+</html>

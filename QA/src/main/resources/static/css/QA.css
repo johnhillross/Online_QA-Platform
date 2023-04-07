@@ -1,0 +1,112 @@
+.QA-container {
+	max-width: 1140px;
+	width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.QA-form-signin {
+	width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.QA-blogs-card {
+	position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+}
+.QA-blogs-authors-list {
+	list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.QA-blogs-authors {
+	display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.QA-blogs-authors-avatar {
+	border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    margin-right: 15px;
+}
+.QA-img {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+.QA-tag {
+	color: black;
+	background-color: #E6E6E6;
+	border-radius: 20px;
+	padding: 10px 20px;
+	margin: 0px 5px 5px 0px;
+}
+.QA-summary {
+	overflow:hidden;
+	text-overflow:ellipsis;
+	display:-webkit-box;
+	-webkit-box-orient:vertical;
+	-webkit-line-clamp:3;
+}
+.QA-comment {
+	background-color: #fafafb;
+	border-color: #eff0f1;
+	border-width: 1px;
+	border-bottom-width: 2px;
+	border-style: solid;
+	border-radius: 3px;
+	padding: 10px 20px 10px 20px;
+}
+.QA-number {
+	background-color: rgba(27,31,35,.08);
+	border-radius: 50%;
+	padding: 2px 6px 2px 6px;
+	font-size: 15px;
+}
+.QA-tag-container {
+    padding: 2.5px 5px 2.5px 5px;
+    background-color: #E1ECF4;
+    color: #39739d;
+    border-radius: 3px;
+}
+.carousel {
+  margin-bottom: 4rem;
+}
+/* Since positioning the image, we need to help out the caption */
+.carousel-caption {
+  bottom: 3rem;
+  z-index: 10;
+}
+
+/* Declare heights because of positioning of img element */
+.carousel-item {
+  height: 32rem;
+  background-color: #777;
+}
+.carousel-item > img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  height: 32rem;
+}

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:replace="~{fragments/header :: header}">
+</head>
+<body>
+	<div style="padding-top: 50px" class="QA-container">
+		<div class="row">
+			<div style="border-right: 1px solid #e5e5e5;" class="col-md-9">
+				<h1><a style="color: #212529;" th:href="'/user/' + ${blogModel.user.username} + '/blogs/'+ ${blogModel.id}" th:title="${blogModel.user.username}" th:text="${blogModel.title}"></a></h1>
+				
+				<div style="display: flex; margin-top: 20px; margin-bottom: 20px;">
+					<div style="height: 5px; width: 60px; background-color: #FF7800;"></div>
+		        	<div style="margin-left: auto;">
+						<span class="far fa-heart" th:text="' '+${blogModel.voteSize}"></span> <span class="far fa-eye" th:text="' '+${blogModel.readSize}">
+							</span> <span class="far fa-comment-dots" th:text="' '+${blogModel.commentSize}"></span>
+					</div>
+		        </div>
+				
+				<div style="padding-top: 20px; padding-bottom: 20px;" class="QA-blogs-authors">
+		          	<div th:if="${blogModel.user.avatar != null}" th:style="'width: 60px; height: 60px; border-radius: 50%; margin-right: 15px;' + 'background-image: url(' + 'http://localhost:81/upload/avatar/' + ${blogModel.user.avatar} + ');'" class="QA-img"></div>
+		          	<div th:unless="${blogModel.user.avatar != null}" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; background-image: url('../../../images/default-avatar.jpg');'" class="QA-img"></div>
+					<div class="mb-1 text-muted">
+						<span>By</span>
+						<a class="mb-1 text-muted" th:href="'/user/' + ${blogModel.user.username}" th:text="${blogModel.user.username}"></a>
+						<span>On</span>
+						<span th:text="${#strings.substring(blogModel.createTime,0,10)}"></span>
+					</div>
+		        </div>
+		        
+		        <div th:if="${isBlogOwner}" style="display: flex;">
+		        	<div style="margin-left: auto; display: flex;">
+		        		<div style="margin-right: 10px; padding: 5px 10px 5px 10px; border: 1px solid #212529; border-radius: 3px;">
+		        			<a style="color: #212529;" th:href="'/user/' + ${blogModel.user.username}+ '/blogs/edit/'+ ${blogModel.id}"><span class="fas fa-pencil-square-o"></span>Edit</a>
+		        		</div>
+		        		<div style="margin-right: 10px; padding: 5px 10px 5px 10px; border: 1px solid #212529; border-radius: 3px;" class="blog-delete-blog">
+		        			<a style="color: #212529;" href="javascript:void(0)"><span class="fas fa-times"></span>Delete</a>
+		        		</div>
+		        	</div>
+		        </div>
+		        
+		        <div style="padding-bottom: 50px;">
+		        	<hr>
+		        	<div style="margin-top: 10px; margin-bottom: 10px; font-size: 20px;"><strong th:text="${blogModel.summary}">
+                	</strong></div>
+		        	<img style="width: 100%; height: auto; border-radius: 3px; margin-top: 10px; margin-bottom: 10px;" th:src="${blogModel.cover} == null ? '../../../images/default-cover.jpg' : 'http://localhost:81/upload/cover/' + ${blogModel.cover}">
+			        <div id="markdown-view">
+			        	<textarea style="display:none;" th:text="${blogModel.content}">
+                		</textarea>
+                	</div>
+                	<hr>
+		        </div>
+		        
+		        <div style="padding-bottom: 50px; display: flex;">
+		        	<div style="margin-right: auto;" th:if="${currentVote} == null">
+		        		<span><strong>Like this article? Don't forget to </strong></span>
+		        		<span style="background-color: #FF7800; color: #fff; border-radius: 20px; padding: 10px 20px;" class="btn" id="submitVote"><strong>Vote</strong></span>
+		        		<div style="height: 5px; width: 60px; background-color: #FF7800; margin-top: 20px; margin-bottom: 20px;"></div>
+		        	</div>
+		        	<div style="margin-right: auto;" th:if="${currentVote}">
+		        		<span><strong>You can do better </strong></span>
+		        		<span style="background-color: #FF7800; color: #fff; border-radius: 20px; padding: 10px 20px;" class="btn" th:attr="voteId=${currentVote.id}" id="cancelVote"><strong>Cancel Vote</strong></span>
+		        		<div style="height: 5px; width: 60px; background-color: #FF7800; margin-top: 20px; margin-bottom: 20px;"></div>
+		        	</div>
+		        </div>
+	            
+	            <div class="row">
+	            	<div class="col-md-4">
+	            		<h2>Author</h2>
+						<div style="height: 5px; width: 60px; background-color: #FF7800; margin-top: 20px; margin-bottom: 20px;"></div>
+						<div style="padding-top: 20px; padding-bottom: 20px;" class="QA-blogs-authors">
+							<div th:if="${blogModel.user.avatar != null}" th:style="'width: 60px; height: 60px; border-radius: 50%; margin-right: 15px;' + 'background-image: url(' + 'http://localhost:81/upload/avatar/' + ${blogModel.user.avatar} + ');'" class="QA-img"></div>
+		          			<div th:unless="${blogModel.user.avatar != null}" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; background-image: url('../../../images/default-avatar.jpg');" class="QA-img"></div>
+							<div class="mb-1 text-muted">
+								<a style="font-size: 20px; color: black;" th:href="'/user/' + ${blogModel.user.username}" th:text="${blogModel.user.username}"></a><br>
+								<span th:text="${blogModel.user.email}"></span>
+							</div>
+				        </div>
+	            	</div>
+	            	<div class="col-md-4">
+	            		<h2>Tags</h2>
+						<div style="height: 5px; width: 60px; background-color: #FF7800; margin-top: 20px; margin-bottom: 20px;"></div>
+						<div style="padding-top: 20px; padding-bottom: 20px; line-height: 50px;">
+							<a th:each="tag : ${#strings.arraySplit(blogModel.tags , ',')}" th:href="'/user/' + ${blogModel.user.username}  + '?keyword='+ ${tag}"> <span class="QA-tag" th:text="${tag}"></span></a>
+				        </div>
+	            	</div>
+	            	<div class="col-md-4">
+	            		<h2>Catalog</h2>
+	            		<div style="height: 5px; width: 60px; background-color: #FF7800; margin-top: 20px; margin-bottom: 20px;"></div>
+						<div style="padding-top: 20px; padding-bottom: 20px; line-height: 50px;">
+	            			<a th:href="'/user/'+${blogModel.user.username} + '?catalog='+${blogModel.catalog.id}"><span class="QA-tag" th:text="${blogModel.catalog.name}"></span></a>
+	            		</div>
+	            	</div>
+	            </div>
+	            
+	            <div class="row">
+	            	<div class="col-md-12">
+	            		<h2>Related Articles</h2>
+						<div style="height: 5px; width: 60px; background-color: #FF7800; margin-top: 20px; margin-bottom: 20px;"></div>
+						<div style="padding-top: 20px; padding-bottom: 20px;">
+				          	<div class="row">
+				          		<div class="col-md-4" th:each="blog : ${blogList}">
+				          			<div th:style="'width: 100%; height: 150px;' + 'background-image: url(' + 'http://localhost:81/upload/cover/' + ${blog.cover} + ');'" class="QA-img"></div>
+				          			<h3 class="mb-0">
+							          <a class="text-dark" th:href="'/user/' + ${blog.username} + '/blogs/' + ${blog.blogId}" th:text="${blog.title}"></a>
+							        </h3>
+				          			<div class="mb-1 text-muted">
+										<span>By</span>
+										<a class="text-muted" th:href="'/user/'+${blog.username}" th:text="${blog.username}"></a>
+										<span>On</span>
+										<span th:text="${#strings.substring(blog.createTime,0,10)}"></span>
+									</div>
+				          			<p class="QA-summary" th:text="${blog.summary}"></p>
+		      						<a style="color: #0174CE;" th:href="'/user/'+${blog.username}+'/blogs/'+${blog.blogId}"><strong>Continue reading</strong></a>
+								</div>
+				          	</div>
+				        </div>
+				    </div>
+	            </div>
+	            
+	            <hr>
+	            
+	            <div class="row">
+	            	<div class="col-md-12">
+	            		<h2>Comments</h2>
+						<div style="height: 5px; width: 60px; background-color: #FF7800; margin-top: 20px; margin-bottom: 20px;"></div>
+						<div style="padding-top: 20px; padding-bottom: 20px;">
+			            	<div class="row" id="mainContainer">
+			            		<div class="col-md-12" id="mainContainerRepleace" th:each="comment,commentStat : ${comments}" th:object="${comment}">
+			            			<div style="padding-top: 20px; padding-bottom: 20px;">
+			            				<div th:if="${commentOwner} eq *{user.username}" style="display: flex;">
+			            					<a style="margin-left: auto;" class="blog-delete-comment" th:attr="commentId=*{id}"><i class="fas fa-times" aria-hidden="true"></i></a>
+			            				</div>
+				            			<div class="QA-blogs-authors">
+				            				<div th:if="*{user.avatar != null}" th:style="'width: 50px; height: 50px; border-radius: 3px; margin-right: 15px;' + 'background-image: url(' + 'http://localhost:81/upload/avatar/' + *{user.avatar} + ');'" class="QA-img"></div>
+		          							<div th:unless="*{user.avatar != null}" style="width: 50px; height: 50px; border-radius: 3px; margin-right: 15px; background-image: url('../../../images/default-avatar.jpg');" class="QA-img"></div>
+											<div class="mb-1 text-muted">
+												<a style="color: black;" th:href="'/user/'+*{user.username}"><strong th:text="*{user.username}"></strong></a>
+												<span>says:</span>
+											</div>
+											<div style="margin-left: auto; font-size: 5px;" class="text-muted">
+												<span>On</span>
+												<span th:text="${#strings.substring(comment.createTime,0,10)}"></span>
+											</div>
+								        </div>
+								        <div class="QA-comment">
+								        	<p style="margin-bottom: 0px;" th:text="*{content}"></p>
+								        </div>
+								    </div>
+			            		</div>
+			            	</div>
+						</div>
+	            	</div>
+	            </div>
+	            
+	            <div class="row">
+	            	<div class="col-md-12">
+	            		<h2>Leave a Reply</h2>
+	            		<div style="height: 5px; width: 60px; background-color: #FF7800; margin-top: 20px; margin-bottom: 20px;"></div>
+						<div style="padding-top: 20px; padding-bottom: 20px;">
+							<div class="row">
+			            		<div class="col-md-12">
+			            			<textarea style="resize: none; width: 100%; height: 100px; margin-bottom: 10px;" id="commentContent" name="commentContent" required="required"></textarea>
+			            		</div>
+			            	</div>
+			            	<div style="text-align: right;">
+			            		<button style="color: #F48024; border: 1px solid #F48024; background-color: #FFF; font-size: 20px;" id="submitComment">POST COMMENT</button>
+			            	</div>
+			            </div>
+	            	</div>
+	            </div>
+	            
+	        </div>
+				
+			<div class="col-md-3">
+				<div style="display: flex; padding-top: 15px; border-bottom: 1px solid #e5e5e5;">
+					<span style="margin-left: 5px; margin-right: 10px; margin-top: 5px;" class="fas fa-list"></span>
+					<h4 class="font-italic">Catalogue</h4>
+				</div>
+				<div id="custom-toc-container"></div>
+			</div>
+		</div>
+	</div>
+	
+	<div th:replace="~{fragments/footer :: footer}"></div>
+	
+	<!-- JavaScript -->
+	<script th:inline="javascript">
+	var blogId = [[${blogModel.id}]];
+	var blogUrl = '/user/' + [[${blogModel.user.username}]] + '/blogs/'+ [[${blogModel.id}]] ;
+	</script>
+	<script src="../../js/blog/main.js" th:src="@{/js/blog/main.js}"></script>
+	
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}">
+</head>
+<body>
+	<div class="QA-container">
+		<div style="padding-top: 15px;" class="row">
+			<div style="border-right: 1px solid #e5e5e5;" class="col-md-9">
+				<div style="border-bottom: 1px solid #e5e5e5; padding-bottom: 10px; margin-bottom: 20px;">
+					<h2>All Blogs</h2>
+					<div style="text-align: right;">
+						<a href="/blogs?order=new" ><span style="margin-left: 10px; font-size: 20px;" class="QA-tag-container QA-hot-new"><strong>new</strong><span class="sr-only">(current)</span></span></a>
+						<a href="/blogs?order=hot" ><span style="margin-left: 10px; font-size: 20px;" class="QA-tag-container QA-hot-new"><strong>hot</strong></span></a>
+					</div>
+				</div>
+				<div id="mainContainer">
+					<div id="mainContainerRepleace">
+						<div style="margin-bottom: 20px; height: 250px;" class="row" th:each="blog : ${blogList}">
+							<div class="col-md-6">
+								<div
+									th:if="${blog.cover != null}" th:style="'width: 100%; height: 100%; ' + 'background-image :url(\'' + 'http://localhost:81/upload/cover/'+${blog.cover} + '\');'"
+									class="QA-img">
+								</div>
+								<div
+									th:unless="${blog.cover != null}" style="width: 100%; height: 100%; background-image :url('../../images/default-cover.jpg');"
+									class="QA-img">
+								</div>
+							</div>
+							<div style="display: flex; flex-direction: column;" class="col-md-6">
+								<div style="text-align: right;">
+									<strong class="text-primary" th:each="tag : ${#strings.arraySplit(blog.tags , ',')}" th:text="${tag}+' '"></strong>
+								</div>
+								<div>
+									<h3>
+										<a class="text-dark" th:href="'/user/'+${blog.username}+'/blogs/'+${blog.blogId}" th:text="${blog.title}"></a>
+									</h3>
+								</div>
+								<div style="margin-top: 10px; margin-bottom: 10px; font-size: 10px; display: flex;" class="text-muted">
+									<div>
+										<span>By</span>
+										<a class="text-muted" th:href="'/user/'+${blog.username}" th:text="${blog.username}"></a>
+									</div>
+									<div style="margin-left: auto;">
+										<span>On</span>
+										<span th:text="${#strings.substring(blog.createTime,0,10)}"></span>
+									</div>
+								</div>
+								<div>
+									<p class="QA-summary" th:text="${blog.summary}"></p>
+								</div>
+								<div style="display: flex; margin-top: auto;">
+									<a style="color: #0174CE;" th:href="'/user/'+${blog.username}+'/blogs/'+${blog.blogId}"><strong>Continue reading</strong></a>
+									<div style="margin-left: auto;">
+										<span class="far fa-heart" th:text="' '+${blog.voteSize}"></span> <span class="far fa-eye" th:text="' '+${blog.readSize}">
+											</span> <span class="far fa-comment-dots" th:text="' '+${blog.commentSize}"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div style="padding-top: 30px;" class="row">
+							<div style="margin-left: auto;" class="col-md-5">
+								<div th:replace="~{fragments/page :: page}"></div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div style="padding-top: 15px; border-bottom: 1px solid #e5e5e5; display: flex;">
+					<span style="margin-right: 10px;" class="fas fa-tags"></span>
+					<h4>Related Tags</h4>
+				</div>
+				<div style="padding-top: 10px; padding-bottom: 10px;">
+					<div th:each="tag, tagStat : ${tags}" th:object="${tag}">
+						<a th:href="'/blogs?keyword=' +  *{name}"> <span
+							style="margin: 5px 10px 5px 0px; font-size: 20px;" class="badge"
+							th:classappend="${tagStat.index} eq 0 ? 'badge-danger': (${tagStat.index} eq 1 ? 'badge-warning':(${tagStat.index} eq 2 ? 'badge-info':'QA-badge-default'))"
+							th:text="*{name}"></span></a>
+					</div>
+				</div>
+
+				<div style="padding-top: 15px; border-bottom: 1px solid #e5e5e5; display: flex;">
+					<span style="margin-right: 10px;" class="fas fa-arrow-up"></span>
+					<h4>Hot Archives</h4>
+				</div>
+				<div th:each="hotblog , hotblogStat : ${hotest}" th:object="${hotblog}">
+					<div style="padding-top: 10px; padding-bottom: 10px; display: flex;">
+						<a style="color: #212529; margin-right: 10px;" th:href="'/user/'+*{username} +'/blogs/'+ *{blogId}"><span th:text="*{title}"></span></a>
+						<div>
+							<div style="text-align: center;"><strong class="QA-tag-container" th:text="*{readSize}"></strong></div>
+						</div>
+					</div>
+               </div>
+
+				<div style="padding-top: 15px; border-bottom: 1px solid #e5e5e5; display: flex;">
+					<span style="margin-right: 10px;" class="fas fa-fire"></span>
+					<h4>Hot Authors</h4>
+				</div>
+				<div class="QA-blogs-authors-list" th:each="user: ${users}" th:object="${user}">
+					<div style="margin-top: 10px; margin-bottom: 10px;" class="QA-blogs-authors">
+						<div th:if="*{avatar != null}" th:style="'width: 60px; height: 60px; border-radius: 50%; margin-right: 15px;' + 'background-image: url(' + 'http://localhost:81/upload/avatar/' + *{avatar} + ');'" class="QA-img"></div>
+		          		<div th:unless="*{avatar != null}" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; background-image: url('../../images/default-avatar.jpg');" class="QA-img"></div>
+						<div>
+							<a th:href="'/user/' + *{username}"><span style="color: #212529;" th:text="*{username}"></span></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="~{fragments/footer :: footer}"></div>
+	
+	<!-- JavaScript -->
+	<script src="../../js/blogs/main.js" th:src="@{/js/blogs/main.js}"></script>
+</body>
+</html>

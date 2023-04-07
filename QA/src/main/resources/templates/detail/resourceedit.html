@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}">
+</head>
+<body>
+	<div class="QA-container">
+		<h2>Share a new Resource</h2>
+		<hr>
+		<form enctype="multipart/form-data" th:action="'/user/'+${resourceModel.user.username}+'/resources/edit'" th:object="${resourceModel.resource}" method="POST">
+			<div class="row">
+				<div style="border-right: 1px solid #e5e5e5;" class="col-md-9">
+				
+					<input type="hidden" name="id" th:value="*{id}" id="resourceId">
+					
+					<div class="row">
+						<div class="col-md-2">
+							<div class="form-group">
+								<label for="Owner" class="col-form-label"><strong>Owner </strong></label>
+								<div class="QA-blogs-authors">
+									<div th:if="${resourceModel.user.avatar != null}" th:style="'width: 30px; height: 30px; margin-right: 15px;' + 'background-image: url(' + 'http://localhost:81/upload/avatar/' + ${resourceModel.user.avatar} + ');'" class="QA-img"></div>
+		          					<div th:unless="${resourceModel.user.avatar != null}" th:style="'width: 30px; height: 30px; margin-right: 15px;' + 'background-image: url(' + @{/images/default-avatar.jpg} + ');'" class="QA-img"></div>
+									<a style="color: black;" th:href="'/user/'+${resourceModel.user.username}"><strong th:text="${resourceModel.user.username}"></strong></a>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-10">
+							<div class="form-group">
+								<label for="title" class="col-form-label"><strong>Resource
+										Title </strong><span style="color: red">*</span></label> <input type="text"
+									class="form-control" id="title" name="title" th:value="*{title}"
+									maxlength="50" placeholder="Please fill in the resource title">
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="summary" class="col-form-label"><strong>Resource
+								Summary </strong><span style="color: red">*</span></label>
+						<textarea type="text" style="resize: none;" class="form-control"
+							id="summary" name="summary" th:text="*{summary}" maxlength="300"
+							placeholder="Please fill in the resource summary"></textarea>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-form-label">
+							<strong>Resource ImageList</strong>
+							<span style="color: red">*</span>
+						</label>
+						<div style="margin-left: 1px; margin-right: 1px;" class="row">
+							<div style="border: 1px solid #ced4da; border-radius: 5px; height: 150px;" class="col-md-3">
+								
+							</div>
+							<div style="margin-left: auto; margin-right: auto; border: 1px solid #ced4da; border-radius: 5px; height: 150px;" class="col-md-3">
+								
+							</div>
+							<div style="display: flex; height: 150px;" class="col-md-3">
+								<div style="margin: auto;">
+									<span style="font-size: 150px; color: #ced4da" class="fa fa-plus-square-o"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="content" class="col-form-label"><strong>Resource
+								Content </strong><span style="color: red">*</span></label>
+						<div id="editor">
+							<textarea style="display:none;" id="md"
+							name="content" th:text="*{content}"></textarea>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-form-label">
+							<strong>Resource FileList</strong>
+							<span style="color: red">*</span>
+						</label>
+						<div style="margin-left: 1px; margin-right: 1px;" class="row">
+							<div style="border: 1px solid #ced4da; border-radius: 5px; height: 150px;" class="col-md-3">
+								
+							</div>
+							<div style="margin-left: auto; margin-right: auto; border: 1px solid #ced4da; border-radius: 5px; height: 150px;" class="col-md-3">
+								
+							</div>
+							<div style="display: flex; height: 150px;" class="col-md-3">
+								<div style="margin: auto;">
+									<span style="font-size: 150px; color: #ced4da" class="fa fa-plus-square-o"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				<div class="col-md-3">
+				
+					<div class="form-group">
+						<label for="tags" class="col-form-label"><strong>Tags </strong><span style="color: red">*</span></label>
+						<input type="text" class="form-control form-control-tag" id="tags" name="tags" th:value="${resourceModel.resource.tags}">
+					</div>
+					
+					<hr>
+					<button class="btn btn-primary btn-lg btn-block" type="submit">Share resource</button>
+					
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

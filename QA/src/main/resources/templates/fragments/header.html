@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" data-th-fragment="header">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<!-- CSRF -->
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<!-- default header name is X-CSRF-TOKEN -->
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+	
+	<title>Q&A</title>
+	
+	<!-- Bootstrap CSS -->
+	<!-- <link href="../../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"> -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	
+	<!-- Font Awesome CSS -->
+	<link href="../../css/fontawesome.css" th:href="@{/css/fontawesome.css}" rel="stylesheet">
+	<link href="../../css/solid.css" th:href="@{/css/solid.css}" rel="stylesheet">
+	<link href="../../css/regular.css" th:href="@{/css/regular.css}" rel="stylesheet">
+    
+    <!-- bootstrap tags CSS -->
+    <link href="../../css/bootstrap-tagsinput.css" th:href="@{/css/jquery.tagsinput.min.css}" rel="stylesheet">
+    
+    <!-- bootstrap chosen CSS -->
+    <link href="../../css/component-chosen.min.css" th:href="@{/css/component-chosen.min.css}" rel="stylesheet">
+    
+    <!-- toastr CSS -->
+    <link href="../../css/toastr.min.css" th:href="@{/css/toastr.min.css}" rel="stylesheet">
+    
+    <!-- editormd CSS -->
+    <link href="../../editormd/css/editormd.preview.css" th:href="@{/editormd/css/editormd.preview.css}" rel="stylesheet">
+    <link href="../../editormd/css/editormd.min.css" th:href="@{/editormd/css/editormd.min.css}" rel="stylesheet">
+	
+	<!-- Custom styles -->
+	<link href="../../css/QA.css" th:href="@{/css/QA.css}" rel="stylesheet">
+	<link href="../../css/thymeleaf-bootstrap-paginator.css" th:href="@{/css/thymeleaf-bootstrap-paginator.css}" rel="stylesheet">
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container">
+        <a class="navbar-brand" href="/"><strong><span style="color: #FF7800;">Q</span><span style="color: #e02433;">&</span><span style="color: #0095ff;">A</span></strong></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="navbar-nav mr-auto">
+          	<li class="nav-item active dropdown">
+			  <a class="nav-link dropdown-toggle" href="#" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Why Q&A?</a>
+			  <div class="dropdown-menu" aria-labelledby="dropdownMenu">
+			    <a class="dropdown-item" href="#">Features</a>
+			    <a class="dropdown-item" href="#">John us</a>
+			  </div>
+			</li>
+            <li class="nav-item active">
+              <a class="nav-link" href="/blogs">Blogs</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="/questions">Questions</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="/resources">Resources</a>
+            </li>
+          </ul>
+          <form class="form-inline my-2 my-md-0">
+            <input style="margin-right: 5px;" class="form-control" type="search" placeholder="Search" id="indexkeyword" th:value="${keyword}" aria-label="Search">
+            <a href="javascript:void(0)" class="btn btn-outline-secondary my-2 my-sm-0 rounded border border-dark" id="indexsearch"><i style="color: #212529;" class="fas fa-search"
+                                                                                             aria-hidden="true"></i></a>
+          </form>
+			<div sec:authorize="isAuthenticated()">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active dropdown">
+					  <a class="nav-link dropdown-toggle" href="#" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-plus"></span></a>
+					  <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+					    <a class="dropdown-item" th:href="'/user/' + ${#authentication.name} + '/blogs/edit'">New articles</a>
+					    <a class="dropdown-item" th:href="'/user/' + ${#authentication.name} + '/questions/edit'">Ask questions</a>
+					    <a class="dropdown-item" th:href="'/user/' + ${#authentication.name} + '/resources/edit'">Share resources</a>
+					  </div>
+					</li>
+					<li class="nav-item active dropdown">
+					  <a class="nav-link dropdown-toggle" href="#" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fas fa-user"></span></a>
+					  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+					    <a class="dropdown-item" th:href="'/user/'+${#authentication.name}">Signed in as<br><strong><span sec:authentication="name"></span></strong></a>
+					    <a class="dropdown-item" th:href="'/user/'+${#authentication.name}+'/profile'">Settings</a>
+					    <div sec:authorize="hasRole('ADMIN')">
+					    	<a class="dropdown-item" href="/admin">Manage users</a>
+					    </div>
+					    <form action="/logout" th:action="@{/logout}" method="post">
+							<input class="dropdown-item" type="submit" value="Sign out">
+						</form>
+					  </div>
+					</li>
+				</ul>
+			</div>
+          <div sec:authorize="isAnonymous()">
+	          <ul class="navbar-nav mr-auto">
+	          	<li class="nav-item active">
+	          		<a class="nav-link" href="/login">Sign&nbsp;in</a>
+	          	</li>
+	          	<li class="nav-item active">
+	          		<a class="nav-link rounded border border-dark" href="/register">Sign&nbsp;up</a>
+	          	</li>
+	          </ul>
+	      </div>
+        </div>
+      </div>
+    </nav>
+</body>
+</html>

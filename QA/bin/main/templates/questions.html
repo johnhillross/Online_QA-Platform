@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}">
+</head>
+<body>
+	<div class="QA-container">
+		<div style="padding-top: 15px;" class="row">
+			<div style="border-right: 1px solid #e5e5e5;" class="col-md-9">
+				<div style="border-bottom: 1px solid #e5e5e5; padding-bottom: 10px; margin-bottom: 20px;">
+					<h2>All Questions</h2>
+					<div style="text-align: right;">
+						<a href="/questions?order=new" ><span style="margin-left: 10px; font-size: 20px;" class="QA-tag-container QA-hot-new"><strong>new</strong><span class="sr-only">(current)</span></span></a>
+						<a href="/questions?order=hot" ><span style="margin-left: 10px; font-size: 20px;" class="QA-tag-container QA-hot-new"><strong>hot</strong></span></a>
+					</div>
+				</div>
+				<div id="questionContainer">
+					<div id="questionContainerRepleace">
+						<div style="margin-left: 5px; margin-right: 5px; border-bottom: 1px solid #e5e5e5; margin-bottom: 20px; height: 220px;" class="row" th:each="question : ${questionList}">
+							<div class="col-md-2">
+								<div style="margin-top: 10px; margin-bottom: 20px; text-align: center;">
+									<div style="font-size: 20px;">
+										<span><strong th:text="${question.qvoteSize}"></strong></span>
+									</div>
+									<div>
+										<span>votes</span>
+									</div>
+								</div>
+								<div th:style="${question.accAnswerId != 0}?'margin-top: 10px; margin-bottom: 20px; text-align: center; border: 1px solid #60b044; border-radius: 3px;':'margin-top: 10px; margin-bottom: 20px; text-align: center;'">
+									<div th:style="${question.accAnswerId != 0}?'font-size: 20px; color: #60b044;':'font-size: 20px;'">
+										<span><strong th:text="${question.answerSize}"></strong></span>
+									</div>
+									<div>
+										<span th:style="${question.accAnswerId != 0}?'color: #60b044;':'none'">answers</span>
+									</div>
+								</div>
+								<div style="margin-top: 10px; margin-bottom: 20px; text-align: center;">
+									<span th:text="${question.viewSize}">0</span>
+									<span>views</span>
+								</div>
+							</div>
+							<div class="col-md-10">
+								<h5><a th:href="'/user/'+${question.username}+'/questions/'+${question.questionId}"><span style="color: #212529;" th:text="${question.title}"></span></a></h5>
+								<div style="margin-top: 10px; margin-bottom: 10px;">
+									<span class="QA-summary" th:text="${question.summary}"></span>
+								</div>
+								<div class="row">
+									<div style="display: flex;" class="col-md-8">
+										<div style="margin-right: 5px; margin-bottom: 5px;" th:each="tag : ${#strings.arraySplit(question.tags , ',')}"><a th:href="'/questions?keyword=' +  ${tag}"><span class="QA-tag-container" th:text="${tag}"></span></a></div>
+									</div>
+									<div class="col-md-4">
+										<div class="text-muted">
+											<span>asked on</span>
+											<span th:text="${#strings.substring(question.createTime,0,10)}"></span>
+										</div>
+										<div style="display: flex;">
+		          							<div th:if="${question.avatar == null}" style="width: 50px; height: 50px; border-radius: 3px; margin-right: 15px; background-image: url('../../../images/default-avatar.jpg');" class="QA-img"></div>
+		          							<div th:unless="${question.avatar == null}" th:style="'width: 50px; height: 50px; border-radius: 3px; margin-right: 15px;' + 'background-image: url('+'http://localhost:81/upload/avatar/'+${question.avatar}+');'" class="QA-img"></div>
+		          							<div style="margin: auto 0px auto 0px;">
+		          								<a th:href="'/user/'+${question.username}"><span class="text-muted" th:text="${question.username}"></span></a>
+		          							</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div style="padding-top: 30px;" class="row">
+					<div style="margin-left: auto;" class="col-md-5">
+						<div th:replace="~{fragments/page :: page}"></div>
+					</div>
+				</div>
+				
+			</div>
+			<div class="col-md-3">
+				<div style="padding-top: 15px; border-bottom: 1px solid #e5e5e5; display: flex;">
+					<span style="margin-right: 10px;" class="fas fa-tags"></span>
+					<h4>Related Tags</h4>
+				</div>
+				<div style="padding-top: 10px; padding-bottom: 10px;">
+					<div th:each="tag, tagStat : ${tags}" th:object="${tag}">
+						<a th:href="'/questions?keyword=' +  *{name}"> <span
+							style="margin: 5px 10px 5px 0px; font-size: 20px;" class="badge"
+							th:classappend="${tagStat.index} eq 0 ? 'badge-danger': (${tagStat.index} eq 1 ? 'badge-warning':(${tagStat.index} eq 2 ? 'badge-info':'QA-badge-default'))"
+							th:text="*{name}"></span></a>
+					</div>
+				</div>
+				
+				<div style="padding-top: 15px; border-bottom: 1px solid #e5e5e5; display: flex;">
+					<span style="margin-right: 10px;" class="fas fa-arrow-up"></span>
+					<h4>Hot Archives</h4>
+				</div>
+				<div th:each="hotquestion , hotquestionStat : ${hotest}" th:object="${hotquestion}">
+					<div style="padding-top: 10px; padding-bottom: 10px; display: flex;">
+						<a style="color: #212529; margin-right: 10px;" th:href="'/user/'+*{username} +'/questions/'+ *{questionId}"><span th:text="*{title}"></span></a>
+						<div>
+							<div style="text-align: center;"><strong class="QA-tag-container" th:text="*{viewSize}"></strong></div>
+						</div>
+					</div>
+               </div>
+
+				<div style="padding-top: 15px; border-bottom: 1px solid #e5e5e5; display: flex;">
+					<span style="margin-right: 10px;" class="fas fa-fire"></span>
+					<h4>Hot Questioners</h4>
+				</div>
+				<div class="QA-blogs-authors-list" th:each="user: ${users}" th:object="${user}">
+					<div style="margin-top: 10px; margin-bottom: 10px;" class="QA-blogs-authors">
+						<div th:if="*{avatar != null}" th:style="'width: 60px; height: 60px; border-radius: 50%; margin-right: 15px;' + 'background-image: url(' + 'http://localhost:81/upload/avatar/' + *{avatar} + ');'" class="QA-img"></div>
+		          		<div th:unless="*{avatar != null}" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; background-image: url('../../images/default-avatar.jpg');" class="QA-img"></div>
+						<div>
+							<a th:href="'/user/' + *{username}"><span style="color: #212529;" th:text="*{username}"></span></a>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	
+	<div th:replace="~{fragments/footer :: footer}"></div>
+	
+	<!-- JavaScript -->
+	<script src="../../js/questions/main.js" th:src="@{/js/questions/main.js}"></script>
+</body>
+</html>

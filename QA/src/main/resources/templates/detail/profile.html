@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:replace="~{fragments/header :: header}">
+</head>
+<body>
+	<div class="QA-container">
+	<form enctype="multipart/form-data" th:action="'/user/'+${userModel.user.username}+'/profile'" method="post" th:object="${userModel.user}" id="userForm">
+		<div class="row">
+			<div class="col-md-3">
+				<label for="newavatar">
+					<div style="position:relative;">
+						<img style="width: 100%; height: auto; border-radius: 3px;" id="img-avatar" th:src="*{avatar} == null ? '../../images/default-avatar.jpg' : 'http://localhost:81/upload/avatar/'+*{avatar}">
+						<div style="left: 5px; bottom: 5px; position: absolute; border-radius: 3px;" class="text-white bg-dark px-2 py-1">
+							<span class="fas fa-pen"></span>
+							<span style="font-size:15px;">Edit</span>
+						</div>
+					</div>
+				</label>
+				<input type="file" accept="image/*" id="newavatar" name="newavatar" th:value="*{avatar}" hidden/>
+				<div class="card">
+					<div style="padding-left:5px; padding-right:5px; padding-top:5px; padding-bottom:5px;">
+						<span style="padding-left:5px; padding-right:5px;" class="fas fa-laugh"></span>
+						<span style="font-size:15px; color: #586069;" th:text="${userModel.user.username}"></span>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-9">
+				<h4 class="mb-3">Edit your personal profile</h4>
+				<input type="hidden" name="id" id="userId" th:value="*{id}" >
+				<div class="mb-3">
+			    	<label for="username">Username <span style="color: red">*</span></label>
+					<div class="input-group">
+			  			<div class="input-group-prepend">
+			    			<span class="input-group-text">@</span>
+			  			</div>
+			  			<input type="text" class="form-control" id="username" aria-describedby="usernameStatus" name="username" maxlength="20" th:value="*{username}" readonly="readonly">
+			  			<div class="invalid-feedback" style="width: 100%;">Your username is required.</div>
+			  		</div>
+			  		<small class="text-muted">This will be your username. You can add the name of your organization later.</small>
+				</div>
+				<div class="mb-3">
+			  		<label for="email">Email <span class="text-muted">(Optional)</span></label>
+			  		<input type="email" class="form-control" id="email" name="email" maxlength="50" th:value="*{email}">
+			  		<div class="invalid-feedback">Please enter a valid email address.</div>
+			  		<small class="text-muted">We’ll occasionally send updates about your account to this inbox. We’ll never share your email address with anyone.</small>
+				</div>
+				<div class="mb-3">
+			  		<label for="password">Password <span style="color: red">*</span></label>
+			  		<input type="password" class="form-control" id="password" name="password" maxlength="20" placeholder="Password" required>
+			  		<div class="invalid-feedback">Please enter your password.</div>
+			  		<small class="text-muted">Make sure it's up to 20 characters.</small>
+				</div>
+			  	<hr class="mb-4">
+			  	<button class="btn btn-primary btn-lg btn-block" type="submit">Edit your profile</button>
+			</div>
+		</div>
+		</form>
+	</div>
+		
+	<div th:replace="~{fragments/footer :: footer}">...</div>
+</body>
+</html>

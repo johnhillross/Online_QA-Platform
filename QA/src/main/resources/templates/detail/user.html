@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:replace="~{fragments/header :: header}">
+</head>
+<body>
+	<div class="QA-container">
+		<div class="row">
+			<div class="col-md-3">
+				<img style="width: 100%; height: auto; border-radius: 3px;"
+					th:src="${userModel.user.avatar} == null ? '../../images/default-avatar.jpg' : 'http://localhost:81/upload/avatar/'+${userModel.user.avatar}">
+				<div class="card">
+					<div
+						style="padding-left: 5px; padding-right: 5px; padding-top: 5px; padding-bottom: 5px;">
+						<span style="padding-left: 5px; padding-right: 5px;"
+							class="fas fa-laugh"></span> <span
+							style="font-size: 15px; color: #586069;"
+							th:text="${userModel.user.username}"></span>
+					</div>
+				</div>
+				<div style="padding-top: 20px; padding-bottom: 20px;">
+					<h1 style="line-height: 1px;">
+						<span style="font-size: 30px; line-height: 30px;"><strong
+							th:text="${userModel.user.username}"></strong></span><br> <span
+							style="font-size: 20px; line-height: 20px; color: #666;"
+							th:text="${userModel.user.email}"></span>
+					</h1>
+				</div>
+				<div th:if="${#authentication.name} == ${userModel.user.username}">
+					<a type="button" style="width: 100%; color: black;"
+						class="btn btn-default"
+						th:href="'/user/' + ${userModel.user.username} + '/profile'">Edit
+						profile</a>
+				</div>
+			</div>
+			<div class="col-md-9">
+				<div style="border-bottom: 1px solid #e5e5e5;"
+					class="nav-scroller py-1 mb-2">
+					<ul class="nav d-flex">
+						<li style="margin-right: 100px;"><a class="text-muted"
+							th:href="'/user/'+${userModel.user.username}+'?tab=Overview'">Overview</a>
+						</li>
+						<li style="margin-right: 100px;"><a class="text-muted"
+							th:href="'/user/'+${userModel.user.username}+'?tab=Blogs'">Blogs</a>
+							<span th:if="${userModel.tab == 'Blogs'}" class="QA-number" th:text="${userModel.page.totalElements}"></span></li>
+						<li style="margin-right: 100px;"><a class="text-muted"
+							th:href="'/user/'+${userModel.user.username}+'?tab=QA'">Q&A</a>
+							<span th:if="${userModel.tab == 'QA'}" class="QA-number" th:text="${userModel.page.totalElements}"></span></li>
+						<li style="margin-right: 100px;"><a class="text-muted"
+							th:href="'/user/'+${userModel.user.username}+'?tab=Share'">Share</a>
+							<span th:if="${userModel.tab == 'Share'}" class="QA-number">0</span></li>
+					</ul>
+				</div>
+				<div th:switch="${userModel.tab}" class="tab-content">
+					<div th:case="'Overview'">
+						<div style="padding-top: 10px; padding-bottom: 15px;">
+							<strong>Popular repositories</strong>
+						</div>
+						<text>Overview</text>
+					</div>
+					<div th:case="'Blogs'">
+						<div style="padding-top: 10px; padding-bottom: 15px;"
+							class="d-flex">
+							<input style="margin-right: 5px;" class="form-control"
+								type="text" placeholder="Search" id="keyword"
+								th:value="${keyword}"> <a style="margin-right: 20px;"
+								class="btn btn-outline-secondary" id="searchBlogs"><i
+								class="fa fa-search" aria-hidden="true"></i></a>
+							<div class="dropdown">
+								<button
+									style="margin-right: 10px; background-color: #eff3f6; background-image: linear-gradient(-180deg, #fafbfc, #eff3f6 90%); color: #24292e; border: 1px solid rgba(27, 31, 35, .2);"
+									class="btn dropdown-toggle" type="button" id="SortMenu"
+									data-toggle="dropdown" aria-haspopup="true"
+									aria-expanded="false">
+									Sort by:
+								</button>
+								<div class="dropdown-menu sort-Blogs" aria-labelledby="SortMenu">
+									<li class="nav-item"><a
+										style="color: #212529; background-color: transparent;"
+										class="dropdown-item nav-link QA-hot-new"
+										data-th-classappend="${userModel.order} eq 'new' ? 'active' : ''"
+										href="javascript:void(0)"
+										th:attr="url='/user/'+${userModel.user.username}+'?tab=Blogs&order=new'">new</a>
+									</li>
+
+									<li class="nav-item"><a
+										style="color: #212529; background-color: transparent;"
+										class="dropdown-item nav-link QA-hot-new"
+										data-th-classappend="${userModel.order} eq 'hot' ? 'active' : ''"
+										href="javascript:void(0)"
+										th:attr="url='/user/'+${userModel.user.username}+'?tab=Blogs&order=hot'">hot</a>
+									</li>
+								</div>
+							</div>
+							<div id="catalogMain" class="dropdown">
+								<div id="catalogRepleace">
+									<button
+										style="margin-right: 10px; background-color: #eff3f6; background-image: linear-gradient(-180deg, #fafbfc, #eff3f6 90%); color: #24292e; border: 1px solid rgba(27, 31, 35, .2);"
+										class="btn dropdown-toggle" type="button" id="TypeMenu"
+										data-toggle="dropdown" aria-haspopup="true"
+										aria-expanded="false">
+										Catalog:
+									</button>
+									<div class="dropdown-menu" aria-labelledby="TypeMenu">
+										<div th:each="catalog : ${catalogs}" th:object="${catalog}">
+											<div style="display: flex; color: #212529; background-color: transparent;" class="dropdown-item QA-query-by-catalog" th:attr="catalogId=*{id}">
+												<span style="margin-right: auto;">[[*{name}]]</span>
+												<div style="margin-left: 5px; text-align: right"
+													th:if="${isCatalogsOwner}">
+													<span class="QA-edit-catalog" data-toggle="modal"
+														data-target="#modal" role="button"
+														th:attr="catalogId=*{id}"><i
+														class="fas fa-pencil-square-o" aria-hidden="true"></i></span> <span
+														class="QA-delete-catalog" th:attr="catalogId=*{id}"><i
+														class="fas fa-times" aria-hidden="true"></i></span>
+												</div>
+											</div>
+										</div>
+										<a th:if="${isCatalogsOwner}"
+											style="color: #212529; background-color: transparent;"
+											class="QA-add-catalog dropdown-item" data-toggle="modal"
+											data-target="#modal" role="button" href="#"><span
+											class="fas fa-plus"></span> New Catalog</a>
+									</div>
+								</div>
+							</div>
+							<div
+								th:if="${#authentication.name} == ${userModel.user.username}">
+								<a type="button"
+									style="background-color: #28a745; background-image: linear-gradient(-180deg, #34d058, #28a745 90%); color: #fff; border: 1px solid rgba(27, 31, 35, .2);"
+									class="btn"
+									th:href="'/user/' + ${userModel.user.username} + '/blogs/edit'"><span
+									class="fas fa-book"></span> New</a>
+							</div>
+						</div>
+						<div id="mainContainer">
+							<div id="mainContainerRepleace">
+								<div style="margin-bottom: 20px; height: 250px;" class="row"
+									th:each="blog : ${blogList}">
+									<div class="col-md-6">
+										<div th:if="${blog.cover != null}"
+											th:style="'width: 100%; height: 100%; ' + 'background-image :url(\'' + 'http://localhost:81/upload/cover/'+${blog.cover} + '\');'"
+											class="QA-img"></div>
+										<div th:unless="${blog.cover != null}"
+											style="width: 100%; height: 100%; background-image: url('../../images/default-cover.jpg');"
+											class="QA-img"></div>
+									</div>
+									<div style="display: flex; flex-direction: column;"
+										class="col-md-6">
+										<div style="text-align: right;">
+											<strong class="text-primary"
+												th:each="tag : ${#strings.arraySplit(blog.tags , ',')}"
+												th:text="${tag}+' '"></strong>
+										</div>
+										<div>
+											<h3>
+												<a class="text-dark"
+													th:href="'/user/'+${blog.user.username}+'/blogs/'+${blog.id}"
+													th:text="${blog.title}"></a>
+											</h3>
+										</div>
+										<div
+											style="margin-top: 10px; margin-bottom: 10px; font-size: 10px; display: flex;"
+											class="text-muted">
+											<div>
+												<span>By</span> <a class="text-muted"
+													th:href="'/user/'+${blog.user.username}"
+													th:text="${blog.user.username}"></a>
+											</div>
+											<div style="margin-left: auto;">
+												<span>On</span> <span
+													th:text="${#strings.substring(blog.createTime,0,10)}"></span>
+											</div>
+										</div>
+										<div>
+											<p class="QA-summary" th:text="${blog.summary}"></p>
+										</div>
+										<div style="display: flex; margin-top: auto;">
+											<a style="color: #0174CE;"
+												th:href="'/user/'+${blog.user.username}+'/blogs/'+${blog.id}"><strong>Continue
+													reading</strong></a>
+											<div style="margin-left: auto;">
+												<span class="far fa-heart" th:text="' '+${blog.voteSize}"></span>
+												<span class="far fa-eye" th:text="' '+${blog.readSize}">
+												</span> <span class="far fa-comment-dots"
+													th:text="' '+${blog.commentSize}"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div style="padding-top: 30px;" class="row">
+									<div style="margin-left: auto;" class="col-md-5">
+										<div th:replace="~{fragments/page :: page}"></div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+						
+						<!-- JavaScript -->
+						<script th:inline="javascript">
+							var catalogId = [[${userModel.catalogId}]];
+						</script>	
+									
+					</div>
+					<div th:case="'QA'">
+						<div style="padding-top: 10px; padding-bottom: 15px;"
+							class="d-flex">
+							<input style="margin-right: 5px;" class="form-control"
+								type="text" placeholder="Search" id="Qkeyword"
+								th:value="${Qkeyword}"> <a style="margin-right: 20px;"
+								class="btn btn-outline-secondary" id="searchQuestions"><i
+								class="fa fa-search" aria-hidden="true"></i></a>
+							<div class="dropdown">
+								<button
+									style="margin-right: 10px; background-color: #eff3f6; background-image: linear-gradient(-180deg, #fafbfc, #eff3f6 90%); color: #24292e; border: 1px solid rgba(27, 31, 35, .2);"
+									class="btn dropdown-toggle" type="button" id="SortMenu1"
+									data-toggle="dropdown" aria-haspopup="true"
+									aria-expanded="false">
+									Sort by:
+								</button>
+								<div class="dropdown-menu sort-QA" aria-labelledby="SortMenu1">
+									<li class="nav-item"><a
+										style="color: #212529; background-color: transparent;"
+										class="dropdown-item nav-link QA-hot-new"
+										data-th-classappend="${order} eq 'new' ? 'active' : ''"
+										href="javascript:void(0)"
+										th:attr="url='/user/'+${userModel.user.username}+'?tab=QA&order=new'">new</a>
+									</li>
+
+									<li class="nav-item"><a
+										style="color: #212529; background-color: transparent;"
+										class="dropdown-item nav-link QA-hot-new"
+										data-th-classappend="${order} eq 'hot' ? 'active' : ''"
+										href="javascript:void(0)"
+										th:attr="url='/user/'+${userModel.user.username}+'?tab=QA&order=hot'">hot</a>
+									</li>
+								</div>
+							</div>
+							<div id="stateMain" class="dropdown">
+								<div id="stateRepleace">
+									<button
+										style="margin-right: 10px; background-color: #eff3f6; background-image: linear-gradient(-180deg, #fafbfc, #eff3f6 90%); color: #24292e; border: 1px solid rgba(27, 31, 35, .2);"
+										class="btn dropdown-toggle" type="button" id="StateMenu"
+										data-toggle="dropdown" aria-haspopup="true"
+										aria-expanded="false">
+										state:
+									</button>
+									<div class="dropdown-menu" aria-labelledby="StateMenu">
+										<a href="javascript:void(0);" style="color: #212529; background-color: transparent;" class="dropdown-item QA-query-by-state" th:attr="state='notSolved'"><span
+											style="color: #212529;">not solved</span></a> <a href="javascript:void(0);"
+											style="color: #212529; background-color: transparent;" class="dropdown-item QA-query-by-state" th:attr="state='reSolved'"><span style="color: #212529;">resolved</span></a>
+									</div>
+								</div>
+							</div>
+							<div
+								th:if="${#authentication.name} == ${userModel.user.username}">
+								<a type="button"
+									style="background-color: #28a745; background-image: linear-gradient(-180deg, #34d058, #28a745 90%); color: #fff; border: 1px solid rgba(27, 31, 35, .2);"
+									class="btn"
+									th:href="'/user/' + ${userModel.user.username} + '/questions/edit'"><span
+									class="fas fa-book"></span> New</a>
+							</div>
+						</div>
+						<div id="questionContainer">
+							<div id="questionContainerRepleace">
+								<div
+									style="margin-left: 5px; margin-right: 5px; margin-bottom: 20px; height: 220px;"
+									class="row" th:each="question : ${questionList}">
+									<div class="col-md-2">
+										<div
+											style="margin-top: 10px; margin-bottom: 20px; text-align: center;">
+											<div style="font-size: 20px;">
+												<span><strong th:text="${question.qvoteSize}"></strong></span>
+											</div>
+											<div>
+												<span>votes</span>
+											</div>
+										</div>
+										<div
+											th:style="${question.accAnswerId != 0}?'margin-top: 10px; margin-bottom: 20px; text-align: center; border: 1px solid #60b044; border-radius: 3px;':'margin-top: 10px; margin-bottom: 20px; text-align: center;'">
+											<div
+												th:style="${question.accAnswerId != 0}?'font-size: 20px; color: #60b044;':'font-size: 20px;'">
+												<span><strong th:text="${question.answerSize}"></strong></span>
+											</div>
+											<div>
+												<span
+													th:style="${question.accAnswerId != 0}?'color: #60b044;':'none'">answers</span>
+											</div>
+										</div>
+										<div
+											style="margin-top: 10px; margin-bottom: 20px; text-align: center;">
+											<span th:text="${question.viewSize}">0</span> <span>views</span>
+										</div>
+									</div>
+									<div class="col-md-10">
+										<h5>
+											<a
+												th:href="'/user/'+${question.user.username}+'/questions/'+${question.id}"><span
+												style="color: #212529;" th:text="${question.title}"></span></a>
+										</h5>
+										<div style="margin-top: 10px; margin-bottom: 10px;">
+											<span class="QA-summary" th:text="${question.summary}"></span>
+										</div>
+										<div class="row">
+											<div style="display: flex;" class="col-md-8">
+												<div style="margin-right: 5px; margin-bottom: 5px;"
+													th:each="tag : ${#strings.arraySplit(question.tags , ',')}">
+													<a th:href="'/questions?keyword=' +  ${tag}"><span
+														class="QA-tag-container" th:text="${tag}"></span></a>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<div class="text-muted">
+													<span>asked on</span> <span
+														th:text="${#strings.substring(question.createTime,0,10)}"></span>
+												</div>
+												<div style="display: flex;">
+													<div th:if="${question.user.avatar == null}"
+														style="width: 50px; height: 50px; border-radius: 3px; margin-right: 15px; background-image: url('../../../images/default-avatar.jpg');"
+														class="QA-img"></div>
+													<div th:unless="${question.user.avatar == null}"
+														th:style="'width: 50px; height: 50px; border-radius: 3px; margin-right: 15px;' + 'background-image: url('+'http://localhost:81/upload/avatar/'+${question.user.avatar}+');'"
+														class="QA-img"></div>
+													<div style="margin: auto 0px auto 0px;">
+														<a th:href="'/user/'+${question.user.username}"><span
+															class="text-muted" th:text="${question.user.username}"></span></a>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div style="padding-top: 30px;" class="row">
+									<div style="margin-left: auto;" class="col-md-5">
+										<div th:replace="~{fragments/page :: page}"></div>
+									</div>
+								</div>
+								
+							</div>
+						</div>
+						
+						<!-- JavaScript -->
+						<script th:inline="javascript">
+							var state = "all";
+						</script>
+						
+					</div>
+					<div th:case="'Share'">
+						<div style="padding-top: 10px; padding-bottom: 15px;">
+							<text>Share</text>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- The modal -->
+	<div class="modal fade" id="modal" tabindex="-1" role="dialog"
+		aria-labelledby="modalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="modalLabel">Add/Edit</h4>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+
+				</div>
+				<div class="modal-body" id="catalogFormContainer"></div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" data-dismiss="modal"
+						id="submitEditCatalog">Submit</button>
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div th:replace="~{fragments/footer :: footer}"></div>
+
+	<!-- JavaScript -->
+	<script th:inline="javascript">
+		var username = [[${userModel.user.username}]];
+	</script>
+	<script src="../../js/user/main.js" th:src="@{/js/user/main.js}"></script>
+</body>
+</html>

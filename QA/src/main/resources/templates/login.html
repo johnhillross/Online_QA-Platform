@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:replace="~{fragments/header :: header}">
+</head>
+<body>
+	<div class="QA-container QA-form-signin text-center">
+		<form  th:action="@{/login}" method="post">
+	      <img class="mb-4" src="../../favicon.ico" alt="" width="72" height="72">
+	      <h1 class="h3 mb-3 font-weight-normal"><strong>Please sign in</strong></h1>
+	      <label for="inputUsername" class="sr-only">Username</label>
+	      <input type="text" class="form-control" id="username" name="username" maxlength="20" placeholder="Username" required autofocus>
+	      <label for="inputPassword" class="sr-only">Password</label>
+	      <input type="password" class="form-control" id="password" name="password" maxlength="20" placeholder="Password" required>
+	      <div class="checkbox mb-3">
+	        <label>
+	          <input type="checkbox" value="remember-me"> Remember me
+	        </label>
+	      </div>
+	      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+	      <div th:if="${loginError}">
+			<p th:text="${errorMsg}"></p>
+		  </div>
+	    </form>
+	</div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

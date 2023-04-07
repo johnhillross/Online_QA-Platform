@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:replace="~{fragments/header :: header}">
+</head>
+<body>
+	<div class="QA-container">
+      <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="../../favicon.ico" alt="" width="72" height="72">
+        <h2><strong>Join Q&A</strong></h2>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 order-md-2 mb-4">
+          <ul class="list-group mb-3">
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+                <h5 class="my-0"><strong>You’ll love Q&A</strong></h5>
+              </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+              	<h6 class="my-0"><strong>Unlimited</strong> public repositories</h6>
+              	<h6 class="my-0"><strong>Unlimited</strong> private repositories</h6>
+              </div>
+            </li>
+			<li class="list-group-item d-flex justify-content-between lh-condensed">
+              <div>
+              	<h6 class="my-0"><span style="color: #60b044;" class="fas fa-check"></span> Limitless collaboration</h6>
+              	<h6 class="my-0"><span style="color: #60b044;" class="fas fa-check"></span> Frictionless development</h6>
+              	<h6 class="my-0"><span style="color: #60b044;" class="fas fa-check"></span> Open source community</h6>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-8 order-md-1">
+          <h4 class="mb-3">Create your personal account</h4>
+          <form th:action="@{/register}"  method="post">
+
+            <div class="mb-3">
+              <label for="username">Username <span style="color: red">*</span></label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">@</span>
+                </div>
+                <input type="text" class="form-control" id="username" aria-describedby="usernameStatus" name="username" maxlength="20" placeholder="Username" required>
+                <div class="invalid-feedback" style="width: 100%;">
+                  Your username is required.
+                </div>
+              </div>
+              <small class="text-muted">This will be your username. You can add the name of your organization later.</small>
+            </div>
+
+            <div class="mb-3">
+              <label for="email">Email <span class="text-muted">(Optional)</span></label>
+              <input type="email" class="form-control" id="email" name="email" maxlength="50" placeholder="you@example.com">
+              <div class="invalid-feedback">
+                Please enter a valid email address.
+              </div>
+              <small class="text-muted">We’ll occasionally send updates about your account to this inbox. We’ll never share your email address with anyone.</small>
+            </div>
+
+            <div class="mb-3">
+              <label for="password">Password <span style="color: red">*</span></label>
+              <input type="password" class="form-control" id="password" name="password" maxlength="20" placeholder="Password" required>
+              <div class="invalid-feedback">
+                Please enter your password.
+              </div>
+              <small class="text-muted">Make sure it's up to 20 characters.</small>
+            </div>
+
+            <hr class="mb-4">
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Create an account</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
