@@ -26,7 +26,7 @@ An online question and answer site based on SpringBoot
 | register.html | 用户注册页面 |
 | profile.html | 用户修改信息页面 |
 | user.html | 用户个人信息页面 |
-| index.html | 管理员信息管理页面 |
+| admin.html | 管理员信息管理页面 |
 | add.html | 管理员添加用户页面 |
 | edit.html | 管理员修改用户信息页面 |
 | list.html | 显示所有用户信息页面 |
