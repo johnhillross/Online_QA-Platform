@@ -43,8 +43,60 @@ An online question and answer site based on SpringBoot
 | footer.html | 网站底部导航栏 |
 | page.html | 用于信息分页显示 |
 
-![]()
+![页面逻辑](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/structure.png)
 
 # 3. 界面展示
 
+## 3.1 用户注册界面
 
+![用户注册界面](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/register.png)
+
+## 3.2 用户登录界面
+
+![用户登录界面](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/login.png)
+
+## 3.3 用户信息修改界面
+
+![用户信息修改界面](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/edit.png)
+
+## 3.4 管理员界面
+
+![管理员界面](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/admin.png)
+
+## 3.5 管理员信息修改界面
+
+![管理员信息修改界面](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/adminedit.png)
+
+## 3.6 文章界面
+
+![文章界面](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/blogs.png)
+
+## 3.7 文章详细界面
+
+![文章详细界面](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/blog.png)
+
+## 3.8 文章信息界面
+
+![文章信息界面](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/bloginfo.png)
+
+## 3.9 文章评论界面
+
+![文章评论界面](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/comment.png)
+
+## 3.10 文章编辑界面
+
+![文章编辑界面](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/blogedit.png)
+
+![文章编辑界面1](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/blogedit1.png)
+
+## 3.11 问题界面
+
+![问题界面](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/questions.png)
+
+## 3.12 问题详细界面
+
+![问题详细界面](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/question.png)
+
+## 3.13 问题编辑界面
+
+![问题编辑界面](https://github.com/johnhillross/Online_QA-Platform/blob/main/pictures/questionedit.png)
